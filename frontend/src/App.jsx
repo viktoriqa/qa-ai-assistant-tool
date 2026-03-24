@@ -8,6 +8,8 @@ import { Loader } from "./components/Loader";
 import { SectionTabs } from "./components/SectionTabs";
 import { ReqTextArea } from "./components/ReqTextArea";
 import { ActionButton } from "./components/ActionButton";
+import { FeatureAnalysis } from "./components/FeatureAnalysis";
+import { ReviewSummary } from "./components/ReviewSummary";
 
 function App() {
   const [requirement, setRequirement] = useState("");
@@ -290,7 +292,7 @@ function App() {
             onGeneratePreview={handleGeneratePreview}
             onDownloadExcel={handleDownloadExcel}
           />
-
+          
           {error && <div className="errorBox">{error}</div>}
         </section>
 
@@ -303,80 +305,8 @@ function App() {
                   : "executiveSummary executiveSummaryBasic"
               }
             >
-              <div
-                className={`executiveMain ${mode === "basic" ? "centered" : "executiveMainPremium"}`}
-              >
-                <div className="executiveHeader">
-                  <div className="executiveHeaderMain">
-                    <div className="sectionEyebrow">Feature Analysis</div>
-
-                    <h2 className="executiveTitle">
-                      {result.feature || "Untitled Feature"}
-                    </h2>
-
-                    <p className="executiveDescription">
-                      {mode === "premium"
-                        ? "Premium QA review with identified gaps, risks, and other supporting artifacts."
-                        : "Basic QA review focused on executable test case generation."}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="executiveMetaRow">
-                  <span>
-                    <strong>{summary.testCasesCount}</strong> test cases
-                  </span>
-
-                  {mode === "premium" && (
-                    <>
-                      <span className="metaDot" />
-                      <span>
-                        <strong>{summary.gapsCount}</strong> gaps
-                      </span>
-                      <span className="metaDot" />
-                      <span>
-                        <strong>{summary.questionsCount}</strong> questions
-                      </span>
-                      <span className="metaDot" />
-                      <span>
-                        <strong>{summary.risksCount}</strong> risks
-                      </span>
-                      <span className="metaDot" />
-                      <span>
-                        <strong>{summary.testDataCount}</strong> test data sets
-                      </span>
-                      <span className="metaDot" />
-                      <span>
-                        <strong>{summary.nonFunctionalCount}</strong>{" "}
-                        non-functional checks
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {mode === "premium" && summary && (
-                <aside className="executiveSide">
-                  <div className="qaHeader">
-                    <div className="qaTitleWithInfo">
-                      <span className="sectionEyebrow">
-                        {summary.summaryTitle}
-                      </span>
-
-                      <div className="infoTooltip">
-                        <span className="infoIcon">i</span>
-                        <div className="tooltipContent">
-                          This summary is based on requirement completeness,
-                          expected outcomes, boundary conditions, risk
-                          distribution, and integration complexity.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="executiveAssessment">{summary.insight}</p>
-                </aside>
-              )}
+              <FeatureAnalysis mode={mode} result={result} summary={summary} />
+              {mode === "premium" && <ReviewSummary summary={summary} />}
             </div>
 
             {mode === "premium" && summary?.warnings?.length > 0 && (
