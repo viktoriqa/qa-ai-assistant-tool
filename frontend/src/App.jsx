@@ -6,6 +6,8 @@ import { FieldCard } from "./components/FieldCard";
 import { AppShellContainer } from "./components/AppShellContainer";
 import { Loader } from "./components/Loader";
 import { SectionTabs } from "./components/SectionTabs";
+import { ReqTextArea } from "./components/ReqTextArea";
+import { ActionButton } from "./components/ActionButton";
 
 function App() {
   const [requirement, setRequirement] = useState("");
@@ -240,21 +242,10 @@ function App() {
         <HeroHeader />
 
         <section className="panel">
-          <div className="panelHeader centeredHeader">
-            <h2>Requirement</h2>
-            <p className="panelSubtext">
-              Paste a user story, acceptance criteria, or feature description
-            </p>
-          </div>
-
-          <div className="formBlock">
-            <textarea
-              className="textarea"
-              value={requirement}
-              onChange={(e) => setRequirement(e.target.value)}
-              placeholder="Example: As a user, I want to reset my password via email so that I can regain access to my account."
-            />
-          </div>
+          <ReqTextArea
+            value={requirement}
+            onChange={(e) => setRequirement(e.target.value)}
+          />
 
           <div className="controlsGrid">
             <FieldCard
@@ -294,23 +285,11 @@ function App() {
             />
           </div>
 
-          <div className="buttonRow">
-            <button
-              className="primaryButton"
-              onClick={handleGeneratePreview}
-              disabled={loading}
-            >
-              {loading ? "Generating..." : "Generate Preview"}
-            </button>
-
-            <button
-              className="secondaryButton"
-              onClick={handleDownloadExcel}
-              disabled={loading}
-            >
-              Download Excel
-            </button>
-          </div>
+          <ActionButton
+            loading={loading}
+            onGeneratePreview={handleGeneratePreview}
+            onDownloadExcel={handleDownloadExcel}
+          />
 
           {error && <div className="errorBox">{error}</div>}
         </section>
