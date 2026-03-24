@@ -5,6 +5,7 @@ import { HeroHeader } from "./components/HeroHeader";
 import { FieldCard } from "./components/FieldCard";
 import { AppShellContainer } from "./components/AppShellContainer";
 import { Loader } from "./components/Loader";
+import { SectionTabs } from "./components/SectionTabs";
 
 function App() {
   const [requirement, setRequirement] = useState("");
@@ -414,87 +415,12 @@ function App() {
                 </div>
               </div>
             )}
-            <div className="sectionTabs">
-              <button
-                className={
-                  openSection === "testCases"
-                    ? "sectionTab active"
-                    : "sectionTab"
-                }
-                onClick={() => toggleSection("testCases")}
-              >
-                Test Cases
-              </button>
 
-              {mode === "premium" && (
-                <>
-                  <button
-                    className={
-                      openSection === "gaps"
-                        ? "sectionTab active"
-                        : "sectionTab"
-                    }
-                    onClick={() => toggleSection("gaps")}
-                  >
-                    Gaps
-                  </button>
-
-                  <button
-                    className={
-                      openSection === "clarificationQuestions"
-                        ? "sectionTab active"
-                        : "sectionTab"
-                    }
-                    onClick={() => toggleSection("clarificationQuestions")}
-                  >
-                    Clarification Questions
-                  </button>
-                  <button
-                    className={
-                      openSection === "risks"
-                        ? "sectionTab active"
-                        : "sectionTab"
-                    }
-                    onClick={() => toggleSection("risks")}
-                  >
-                    Risks
-                  </button>
-
-                  <button
-                    className={
-                      openSection === "testData"
-                        ? "sectionTab active"
-                        : "sectionTab"
-                    }
-                    onClick={() => toggleSection("testData")}
-                  >
-                    Test Data
-                  </button>
-
-                  <button
-                    className={
-                      openSection === "nonFunctionalTests"
-                        ? "sectionTab active"
-                        : "sectionTab"
-                    }
-                    onClick={() => toggleSection("nonFunctionalTests")}
-                  >
-                    Non-Functional
-                  </button>
-
-                  <button
-                    className={
-                      openSection === "coverageMatrix"
-                        ? "sectionTab active"
-                        : "sectionTab"
-                    }
-                    onClick={() => toggleSection("coverageMatrix")}
-                  >
-                    Coverage
-                  </button>
-                </>
-              )}
-            </div>
+            <SectionTabs
+              mode={mode}
+              openSection={openSection}
+              onToggleSection={toggleSection}
+            />
 
             {openSection === "testCases" && (
               <div className="panel sectionPanel sectionAccentCyan">
