@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import api from "./api";
 import "./App.css";
+import { HeroHeader } from "./components/HeroHeader";
+import { FieldCard } from "./components/FieldCard";
+import { AppShellContainer } from "./components/AppShellContainer";
+import { Loader } from "./components/Loader";
 
 function App() {
   const [requirement, setRequirement] = useState("");
@@ -229,29 +233,10 @@ function App() {
 
   return (
     <div className="page">
-      <div className="backgroundGlow backgroundGlowOne" />
-      <div className="backgroundGlow backgroundGlowTwo" />
+      <AppShellContainer>
+        {loading && <Loader />}
 
-      <div className="appShell">
-        {loading && (
-          <div className="loadingOverlay">
-            <div className="loadingCard">
-              <div className="spinner" />
-              <div className="loadingText">
-                <h3>Generating artifacts...</h3>
-                <p>Please wait while the AI prepares your QA output.</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <header className="hero">
-          <div className="badge">AI-powered QA analysis assistant</div>
-          <h1>QA Test Artifact Generator</h1>
-          <p>
-            Turn raw requirements into structured QA analysis — test cases, gaps, risks, insights and polished Excel reports in seconds.
-          </p>
-        </header>
+        <HeroHeader />
 
         <section className="panel">
           <div className="panelHeader centeredHeader">
@@ -271,49 +256,41 @@ function App() {
           </div>
 
           <div className="controlsGrid">
-            <div className="fieldCard">
-              <label className="label">Mode</label>
-              <select
-                className="select"
-                value={mode}
-                onChange={(e) => {
-                  setMode(e.target.value);
-                  setResult(null);
-                  setExpandedCases({});
-                  setOpenSection("testCases");
-                  setError("");
-                }}
-              >
-                <option value="basic">Basic</option>
-                <option value="premium">Premium</option>
-              </select>
-              <small className="helperText">
-                Basic = test cases only. Premium = full QA analysis.
-              </small>
-            </div>
+            <FieldCard
+              title="Mode"
+              value={mode}
+              onChange={(value) => {
+                setMode(value);
+                setResult(null);
+                setExpandedCases({});
+                setOpenSection("testCases");
+                setError("");
+              }}
+              options={[
+                { value: "basic", label: "Basic" },
+                { value: "premium", label: "Premium" },
+              ]}
+              description="Basic = test cases only. Premium = full QA analysis."
+            />
 
-            <div className="fieldCard">
-              <label className="label">Requirement Type</label>
-              <select
-                className="select"
-                value={requirementType}
-                onChange={(e) => {
-                  setRequirementType(e.target.value);
-                  setResult(null);
-                  setExpandedCases({});
-                  setOpenSection("testCases");
-                  setError("");
-                }}
-              >
-                <option value="web">Web UI</option>
-                <option value="api">API</option>
-                <option value="mobile">Mobile</option>
-                <option value="admin">Admin / Back-office</option>
-              </select>
-              <small className="helperText">
-                Tailors the output to the selected product area.
-              </small>
-            </div>
+            <FieldCard
+              title="Requirement Type"
+              value={requirementType}
+              onChange={(value) => {
+                setRequirementType(value);
+                setResult(null);
+                setExpandedCases({});
+                setOpenSection("testCases");
+                setError("");
+              }}
+              options={[
+                { value: "web", label: "Web UI" },
+                { value: "api", label: "API" },
+                { value: "mobile", label: "Mobile" },
+                { value: "admin", label: "Admin / Back-office" },
+              ]}
+              description="Tailors the output to the selected product area."
+            />
           </div>
 
           <div className="buttonRow">
@@ -611,9 +588,12 @@ function App() {
                             <div className="contentBlock">
                               <span className="miniLabel">Regression</span>
                               <p>
-                                Candidate: {tc.regressionCandidate === true ? "Yes" : "No"}
+                                Candidate:{" "}
+                                {tc.regressionCandidate === true ? "Yes" : "No"}
                               </p>
-                              <p>{tc.regressionReason || "No reason provided."}</p>
+                              <p>
+                                {tc.regressionReason || "No reason provided."}
+                              </p>
                             </div>
                           </div>
                         )}
@@ -869,10 +849,8 @@ function App() {
               </div>
             )}
           </section>
-
-          
         )}
-      </div>
+      </AppShellContainer>
     </div>
   );
 }
