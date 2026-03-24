@@ -10,6 +10,7 @@ import { ReqTextArea } from "./components/ReqTextArea";
 import { ActionButton } from "./components/ActionButton";
 import { FeatureAnalysis } from "./components/FeatureAnalysis";
 import { ReviewSummary } from "./components/ReviewSummary";
+import { AttentionPoints } from "./components/AttentionPoints";
 
 function App() {
   const [requirement, setRequirement] = useState("");
@@ -310,19 +311,7 @@ function App() {
             </div>
 
             {mode === "premium" && summary?.warnings?.length > 0 && (
-              <div className="attentionSection">
-                <div className="attentionHeader">
-                  <span className="sectionEyebrow">Attention Points</span>
-                </div>
-
-                <div className="attentionGrid">
-                  {summary.warnings.map((warning, index) => (
-                    <div key={index} className="attentionCard">
-                      {warning}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <AttentionPoints points={summary.warnings} />
             )}
 
             <SectionTabs
