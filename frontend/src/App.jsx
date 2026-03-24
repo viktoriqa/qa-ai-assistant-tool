@@ -11,6 +11,13 @@ import { ActionButton } from "./components/ActionButton";
 import { FeatureAnalysis } from "./components/FeatureAnalysis";
 import { ReviewSummary } from "./components/ReviewSummary";
 import { AttentionPoints } from "./components/AttentionPoints";
+import { TestCases } from "./components/TestCases";
+import { Gaps } from "./components/Gaps";
+import { ClarificationQuestions } from "./components/ClarificationQuestions";
+import { Risks } from "./components/Risks";
+import { TestData } from "./components/TestData";
+import { NonFunctionalTests } from "./components/NonFunctionalTests";
+import { CoverageMatrix } from "./components/CoverageMatrix";
 
 function App() {
   const [requirement, setRequirement] = useState("");
@@ -293,7 +300,7 @@ function App() {
             onGeneratePreview={handleGeneratePreview}
             onDownloadExcel={handleDownloadExcel}
           />
-          
+
           {error && <div className="errorBox">{error}</div>}
         </section>
 
@@ -321,356 +328,42 @@ function App() {
             />
 
             {openSection === "testCases" && (
-              <div className="panel sectionPanel sectionAccentCyan">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Test Cases</h2>
-                    <span>
-                      AI-generated draft cases for QA review. Click a test case
-                      to view details.
-                    </span>
-                  </div>
-                </div>
-
-                {result.testCases?.length ? (
-                  result.testCases.map((tc, index) => {
-                    const isExpanded = expandedCases[index] ?? false;
-
-                    return (
-                      <div
-                        id={`testcase-TC-${index + 1}`}
-                        key={index}
-                        className={`testCaseCard ${isExpanded ? "expanded" : "collapsed"}`}
-                        onClick={() => toggleCase(index)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            toggleCase(index);
-                          }
-                        }}
-                      >
-                        <div className="testCaseTop">
-                          <div className="testCaseMetaRow">
-                            <span className="caseIndex">TC-{index + 1}</span>
-
-                            <div className="pillRow">
-                              <span className="pill pillType">
-                                {tc.type || "—"}
-                              </span>
-                              <span className="pill pillPriority">
-                                Priority: {tc.priority || "—"}
-                              </span>
-                              <span className="pill pillSeverity">
-                                Severity: {tc.severity || "—"}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="testCaseTitleRow">
-                            <h3 className="testCaseTitle">{tc.title}</h3>
-                          </div>
-                        </div>
-
-                        {isExpanded && (
-                          <div
-                            className="testCaseBody"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <div className="contentBlock">
-                              <span className="miniLabel">Preconditions</span>
-                              {tc.preconditions?.length ? (
-                                <ul>
-                                  {tc.preconditions.map((item, i) => (
-                                    <li key={i}>{item}</li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <p>None</p>
-                              )}
-                            </div>
-
-                            <div className="contentBlock">
-                              <span className="miniLabel">Steps</span>
-                              {tc.steps?.length ? (
-                                <ol>
-                                  {tc.steps.map((step, i) => (
-                                    <li key={i}>{step}</li>
-                                  ))}
-                                </ol>
-                              ) : (
-                                <p>None</p>
-                              )}
-                            </div>
-
-                            <div className="contentBlock">
-                              <span className="miniLabel">Expected Result</span>
-                              <p>{tc.expectedResult || "—"}</p>
-                            </div>
-
-                            <div className="contentBlock">
-                              <span className="miniLabel">Regression</span>
-                              <p>
-                                Candidate:{" "}
-                                {tc.regressionCandidate === true ? "Yes" : "No"}
-                              </p>
-                              <p>
-                                {tc.regressionReason || "No reason provided."}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="emptyState">No test cases generated.</p>
-                )}
-              </div>
+              <TestCases
+                testCases={result.testCases}
+                expandedCases={expandedCases}
+                onToggleCase={toggleCase}
+              />
             )}
 
             {mode === "premium" && openSection === "gaps" && (
-              <div className="panel sectionPanel sectionAccentOrange">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Gaps</h2>
-                    <span>Missing or ambiguous requirement details</span>
-                  </div>
-                </div>
-
-                {result.gaps?.length ? (
-                  <ul className="cleanList">
-                    {result.gaps.map((gap, index) => (
-                      <li key={index}>{gap}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="emptyState">No gaps found.</p>
-                )}
-              </div>
+              <Gaps gaps={result.gaps} />
             )}
 
             {mode === "premium" && openSection === "clarificationQuestions" && (
-              <div className="panel sectionPanel sectionAccentViolet">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Clarification Questions</h2>
-                    <span>Questions to resolve before testing</span>
-                  </div>
-                </div>
-
-                {result.clarificationQuestions?.length ? (
-                  <ul className="cleanList">
-                    {result.clarificationQuestions.map((question, index) => (
-                      <li key={index}>{question}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="emptyState">No clarification questions.</p>
-                )}
-              </div>
+              <ClarificationQuestions
+                questions={result.clarificationQuestions}
+              />
             )}
 
             {mode === "premium" && openSection === "risks" && (
-              <div className="panel sectionPanel sectionAccentRed">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Risks</h2>
-                    <span>Potential issues impacting quality or delivery</span>
-                  </div>
-                </div>
-
-                {result.risks?.length ? (
-                  <div className="riskReviewList">
-                    {result.risks.map((risk, index) => (
-                      <div key={index} className="riskCard">
-                        <div className="riskCardHeader">
-                          <span
-                            className={`riskLevel riskLevel-${risk.impact?.toLowerCase() || "default"}`}
-                          >
-                            {risk.impact || "Info"}
-                          </span>
-
-                          <h3 className="riskTitle">{risk.title}</h3>
-                        </div>
-
-                        <p className="riskDescription">{risk.description}</p>
-
-                        {risk.suggestion && (
-                          <div className="riskRecommendation">
-                            <span className="riskRecommendationLabel">
-                              Recommendation
-                            </span>
-                            <p>{risk.suggestion}</p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="emptyState">No risks identified.</p>
-                )}
-              </div>
+              <Risks risks={result.risks} />
             )}
 
             {mode === "premium" && openSection === "testData" && (
-              <div className="panel sectionPanel sectionAccentBlue">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Test Data</h2>
-                    <span>Suggested valid and invalid sample values</span>
-                  </div>
-                </div>
-
-                {result.testData?.length ? (
-                  <div className="dataSpecList">
-                    {result.testData.map((item, index) => (
-                      <div key={index} className="dataSpecCard">
-                        <div className="dataSpecHeader">
-                          <h3>{item.field}</h3>
-                        </div>
-
-                        <div className="dataSpecGrid">
-                          <div className="dataSpecColumn">
-                            <div className="dataSpecColumnHeader">
-                              <span className="dataSpecBadge valid">Valid</span>
-                            </div>
-
-                            {item.validValues?.length ? (
-                              <div className="dataSpecValues">
-                                {item.validValues.map((value, i) => (
-                                  <div key={i} className="dataSpecValueRow">
-                                    <code>{String(value)}</code>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="emptyMini">No valid values</p>
-                            )}
-                          </div>
-
-                          <div className="dataSpecColumn">
-                            <div className="dataSpecColumnHeader">
-                              <span className="dataSpecBadge invalid">
-                                Invalid
-                              </span>
-                            </div>
-
-                            {item.invalidValues?.length ? (
-                              <div className="dataSpecValues">
-                                {item.invalidValues.map((value, i) => (
-                                  <div key={i} className="dataSpecValueRow">
-                                    <code>{String(value)}</code>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="emptyMini">No invalid values</p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="emptyState">No test data generated.</p>
-                )}
-              </div>
+              <TestData testData={result.testData} />
             )}
 
             {mode === "premium" && openSection === "nonFunctionalTests" && (
-              <div className="panel sectionPanel sectionAccentPurple">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Non-Functional Tests</h2>
-                    <span>
-                      Performance, security, usability, accessibility, and
-                      reliability checks
-                    </span>
-                  </div>
-                </div>
-
-                {result.nonFunctionalTests?.length ? (
-                  <div className="nfrList">
-                    {result.nonFunctionalTests.map((item, index) => (
-                      <div key={index} className="nfrItem">
-                        <div className="nfrHeader">
-                          <span
-                            className={`nfrBadge nfrBadge-${(
-                              item.category || "general"
-                            )
-                              .toLowerCase()
-                              .replace(/\s+/g, "-")}`}
-                          >
-                            {item.category || "General"}
-                          </span>
-                        </div>
-
-                        <p className="nfrScenario">{item.scenario}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="emptyState">
-                    No non-functional tests generated.
-                  </p>
-                )}
-              </div>
+              <NonFunctionalTests
+                nonFunctionalTests={result.nonFunctionalTests}
+              />
             )}
 
             {mode === "premium" && openSection === "coverageMatrix" && (
-              <div className="panel sectionPanel sectionAccentGreen">
-                <div className="panelHeader">
-                  <div>
-                    <h2>Coverage Matrix</h2>
-                    <span>
-                      Traceability between requirement areas and test cases
-                    </span>
-                  </div>
-                </div>
-
-                {result.coverageMatrix?.length ? (
-                  <div className="coverageTableWrapper">
-                    <table className="coverageTable">
-                      <thead>
-                        <tr>
-                          <th>Requirement Area</th>
-                          <th>Covered By</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {result.coverageMatrix.map((row, index) => (
-                          <tr key={index}>
-                            <td>{row.requirementArea}</td>
-                            <td>
-                              <div className="coverageChips">
-                                {row.coveredBy?.length ? (
-                                  row.coveredBy.map((item, chipIndex) => (
-                                    <span
-                                      key={chipIndex}
-                                      className="coverageChip clickable"
-                                      onClick={() => handleGoToTestCase(item)}
-                                    >
-                                      {item}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <span className="coverageEmpty">
-                                    Not mapped
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="emptyState">No coverage matrix available.</p>
-                )}
-              </div>
+              <CoverageMatrix
+                coverageMatrix={result.coverageMatrix}
+                onGoToTestCase={handleGoToTestCase}
+              />
             )}
           </section>
         )}
