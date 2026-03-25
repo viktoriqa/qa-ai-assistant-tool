@@ -117,8 +117,10 @@ select {
 
 .panelHeader {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  text-align: center;
   margin-bottom: 22px;
 }
 
@@ -1449,7 +1451,6 @@ button:disabled {
   line-height: 1.6;
 }
 
-/* 🔹 Risk badges refined */
 .riskLevel {
   padding: 5px 10px;
   border-radius: 999px;
