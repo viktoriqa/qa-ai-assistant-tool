@@ -122,16 +122,11 @@ function App() {
   };
 
   const handleGoToTestCase = (tcId) => {
-    // switch tab
     setOpenSection("testCases");
-
-    // wait for render, then scroll
     setTimeout(() => {
       const el = document.getElementById(`testcase-${tcId}`);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-
-        // optional highlight
         el.classList.add("highlighted");
         setTimeout(() => el.classList.remove("highlighted"), 1500);
       }
