@@ -997,14 +997,6 @@ button:disabled {
   font-weight: 700;
 }
 
-.metaDot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(126, 165, 255, 0.45);
-  display: inline-block;
-}
-
 .executiveFootnote {
   margin-top: 18px;
   color: rgba(226, 232, 255, 0.58);

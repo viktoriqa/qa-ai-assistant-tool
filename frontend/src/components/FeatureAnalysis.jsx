@@ -36,10 +36,7 @@ export function FeatureAnalysis({ mode, result, summary }) {
           <>
             {premiumMetaItems.map((item) => (
               <span key={item.label}>
-                <span className="metaDot" />
-                <span>
-                  <strong>{item.value}</strong> {item.label}
-                </span>
+                <strong>{item.value}</strong> {item.label}
               </span>
             ))}
           </>
