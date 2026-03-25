@@ -304,10 +304,6 @@ button:disabled {
   margin-bottom: 4px;
 }
 
-.testCaseBody {
-  gap: 18px;
-}
-
 .resultsGrid {
   display: grid;
   grid-template-columns: 1.7fr 1fr;
@@ -925,10 +921,10 @@ button:disabled {
 .executiveTitle {
   margin: 6px;
 
-  font-size: 32px;             
+  font-size: 32px;
   line-height: 1.2;
 
-  font-weight: 600;             
+  font-weight: 600;
   letter-spacing: -0.02em;
 
   color: #f5f7ff;
@@ -943,7 +939,6 @@ button:disabled {
   font-size: 13px;
   color: rgba(180, 190, 220, 0.72);
 }
-
 
 .executiveDescription {
   margin: 0;
@@ -1015,7 +1010,6 @@ button:disabled {
   line-height: 1.6;
 }
 
-
 @media (max-width: 1100px) {
   .executiveSummary {
     grid-template-columns: 1fr;
@@ -1035,35 +1029,6 @@ button:disabled {
   .executiveDescription {
     font-size: 16px;
   }
-}
-
-.sectionTabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 0 22px;
-}
-
-.sectionTab {
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(226, 232, 255, 0.72);
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.sectionTab:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #f5f7ff;
-}
-
-.sectionTab.active {
-  background: rgba(95, 124, 255, 0.14);
-  border-color: rgba(95, 124, 255, 0.28);
-  color: #ffffff;
-  box-shadow: none;
 }
 
 .dataSpecList {
@@ -1193,7 +1158,10 @@ button:disabled {
     rgba(255, 255, 255, 0.012) 100%
   );
   padding: 18px 20px;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .nfrItem:hover {
@@ -1301,7 +1269,7 @@ button:disabled {
 .qaTitleWithInfo {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px; 
+  gap: 4px;
 }
 
 .qaHeaderRight {
@@ -1329,6 +1297,8 @@ button:disabled {
   color: rgba(235, 240, 255, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: default;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
 /* tooltip */
@@ -1336,7 +1306,7 @@ button:disabled {
   position: absolute;
   top: 140%;
   right: 0;
- 
+
   width: 260px;
   padding: 12px 14px;
   border-radius: 12px;
@@ -1364,11 +1334,6 @@ button:disabled {
 .infoTooltip:hover .tooltipContent {
   opacity: 1;
   transform: translateY(0);
-}
-
-.infoIcon {
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
 }
 
 .infoTooltip:hover .infoIcon {
@@ -1426,7 +1391,9 @@ button:disabled {
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.2s ease, border 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border 0.2s ease;
 }
 
 .riskCard:hover {
@@ -1579,7 +1546,6 @@ button:disabled {
   text-align: left;
   line-height: 1.7;
   max-width: 420px;
-  line-height: 1.7;
   font-size: 14px;
   color: rgba(235, 240, 255, 0.86);
 }
@@ -1618,4 +1584,3 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
-
