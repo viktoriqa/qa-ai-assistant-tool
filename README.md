@@ -136,12 +136,12 @@ The frontend runs on `http://localhost:5173` and the backend on `http://localhos
 
 ## Output Sections
 
-> Available in **Premium Mode** only (except Test Cases, which are available in both modes)
-                                                                     
-| **Test Cases** Structured test cases with preconditions, steps, expected results, type, priority, and severity   
-| **Gaps** Missing, ambiguous, or underspecified areas in the requirement that could lead to untested behavior
-| **Clarification Questions** Open questions to raise with stakeholders or BAs before testing begins                             
-| **Risks** Identified risk areas rated high / medium / low with mitigation recommendations
-| **Test Data** Valid and invalid data sets per input field for boundary, negative, and edge case testing
-| **Non-Functional** Checks covering performance, security, accessibility, usability, and reliability scenarios
-| **Coverage** A matrix showing which feature areas and scenarios are covered by the generated test cases
+| Tab | Description |
+|-----|-------------|
+| **Test Cases** | Structured test cases with preconditions, steps, expected results, type, priority, and severity |
+| **Gaps** | Missing, ambiguous, or underspecified areas in the requirement |
+| **Clarification Questions** | Open questions to raise with stakeholders before testing begins |
+| **Risks** | Identified risk areas rated high/medium/low with mitigation recommendations |
+| **Test Data** | Valid and invalid data sets per input field for boundary and negative testing |
+| **Non-Functional** | Checks for performance, security, accessibility, usability, and reliability |
+| **Coverage** | A matrix showing which feature areas are covered by the generated test cases |
