@@ -123,8 +123,8 @@ The frontend runs on `http://localhost:5173` and the backend on `http://localhos
 
 ```json
 {
-  "requirement": "string (required)",
-  "requirementType": "web | mobile | api (default: web)"
+  "requirement": "string", // required
+  "requirementType": "web | mobile | api | admin" // optional
 }
 ```
 
