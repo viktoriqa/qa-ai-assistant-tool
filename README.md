@@ -133,7 +133,7 @@ The frontend runs on `http://localhost:5173` and the backend on `http://localhos
 ## Usage
 
 1. Paste your feature requirement into the text area
-2. Select the **Requirement Type** (Web / Mobile / API)
+2. Select the **Requirement Type** (Web / Mobile / API / Admin)
 3. Select the **Mode** (Basic or Premium)
 4. Click **Generate Preview** to see the full analysis
 5. Click **Download Excel** to export the test suite
