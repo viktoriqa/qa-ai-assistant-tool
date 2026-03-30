@@ -27,6 +27,46 @@ An AI-powered QA analysis tool that transforms raw feature requirements into str
 
 ---
 
+## Screenshots
+
+### Overview
+
+![Landing](screenshots/overview/landing.png)
+![Modes](screenshots/overview/overview_modes.png)
+![Requirement Types](screenshots/overview/overview_reqTypes.png)
+![Loading](screenshots/overview/loading...png)
+
+### Basic Mode
+
+![Input](screenshots/basic-mode/basic_input.png)
+![Response](screenshots/basic-mode/basic_response.png)
+![Test Cases](screenshots/basic-mode/basic_testCases.png)
+
+### Premium Mode
+
+![Input](screenshots/premium-mode/premium_input.png)
+![Test Cases](screenshots/premium-mode/premium_testCases.png)
+![Gaps](screenshots/premium-mode/premium_gaps.png)
+![Clarification Questions](screenshots/premium-mode/premium_clarQuestions.png)
+![Risks](screenshots/premium-mode/premium_risks.png)
+![Test Data](screenshots/premium-mode/premium_testData.png)
+![Non-Functional](screenshots/premium-mode/premium_nonFunctional.png)
+![Coverage](screenshots/premium-mode/premium_coverage.png)
+
+#### Review Summary States
+
+| Positive                                                                  | Neutral                                                                 | Warning                                                                 |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| ![Positive](screenshots/premium-mode/summary/review-summary-positive.png) | ![Neutral](screenshots/premium-mode/summary/review-summary-neutral.png) | ![Warning](screenshots/premium-mode/summary/review-summary-warning.png) |
+
+### Export to Excel
+
+| Basic                                                                  | Premium                                                                  |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ![Basic Excel](screenshots/export/basic/export_basic_xlsxOverview.png) | ![Premium Excel](screenshots/export/premium/export_premium_overview.png) |
+
+---
+
 ## Tech Stack
 
 | Layer    | Technology                       |
@@ -142,13 +182,13 @@ The frontend runs on `http://localhost:5173` and the backend on `http://localhos
 
 ## Output Sections
 
-| Tab                         | Description                                                                                     |
-| --------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Feature Analysis**        | Summary panel with artifact counts, also includes Review Summary and Attention Points (premium only)         |
-| **Test Cases**              | Structured test cases with preconditions, steps, expected results, type, priority, and severity |
-| **Gaps**                    | Missing, ambiguous, or underspecified areas in the requirement (premium only)                                  |
-| **Clarification Questions** | Open questions to raise with stakeholders before testing begins  (premium only)                                  |
-| **Risks**                   | Identified risk areas rated high/medium/low with mitigation recommendations  (premium only)                     |
-| **Test Data**               | Valid and invalid data sets per input field for boundary and negative testing  (premium only)                    |
-| **Non-Functional**          | Checks for performance, security, accessibility, usability, and reliability  (premium only)                      |
-| **Coverage**                | A matrix showing which feature areas are covered by the generated test cases  (premium only)                     |
+| Tab                         | Description                                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Feature Analysis**        | Summary panel with artifact counts, also includes Review Summary and Attention Points (premium only) |
+| **Test Cases**              | Structured test cases with preconditions, steps, expected results, type, priority, and severity      |
+| **Gaps**                    | Missing, ambiguous, or underspecified areas in the requirement (premium only)                        |
+| **Clarification Questions** | Open questions to raise with stakeholders before testing begins (premium only)                       |
+| **Risks**                   | Identified risk areas rated high/medium/low with mitigation recommendations (premium only)           |
+| **Test Data**               | Valid and invalid data sets per input field for boundary and negative testing (premium only)         |
+| **Non-Functional**          | Checks for performance, security, accessibility, usability, and reliability (premium only)           |
+| **Coverage**                | A matrix showing which feature areas are covered by the generated test cases (premium only)          |
