@@ -15,9 +15,15 @@ An AI-powered QA analysis tool that transforms raw feature requirements into str
   - Test Data Specifications (valid and invalid data sets per field)
   - Non-Functional Tests (performance, security, accessibility, usability, reliability)
   - Coverage Matrix (feature area coverage overview)
-- **Export to Excel** — Download the full test suite as a formatted `.xlsx` file
-- **Requirement Type Support** — Web, Mobile, API
-- **Premium/Admin persona modes**
+  - **Export to Excel** — Download the full test suite as a formatted `.xlsx` file
+  - **Requirement Type Support** — Web, Mobile, API, Admin
+  - **Feature Analysis** — At-a-glance summary panel displayed alongside premium results, including:
+  - Total test case count
+  - Gap count
+  - Clarification question count
+  - Risk count (with high/medium/low breakdown)
+  - Review Summary — overall quality assessment of the requirement (tone: positive / neutral / warning) with a short insight
+  - Attention Points — auto-detected warnings about requirement completeness, boundary coverage, and risk exposure
 
 ---
 

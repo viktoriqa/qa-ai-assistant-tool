@@ -277,12 +277,14 @@ router.post("/generate-excel", async (req, res) => {
 
     const workbook = new ExcelJS.Workbook();
     addTestCasesSheet(workbook, testCases);
-    addGapsSheet(workbook, gaps);
-    addClarificationQuestionsSheet(workbook, questions);
-    addRisksSheet(workbook, risks);
-    addTestDataSheet(workbook, testData);
-    addNonFunctionalTestsSheet(workbook, nonFunctionalTests);
-    addCoverageMatrixSheet(workbook, coverageMatrix);
+    if (mode === "premium") {
+      addGapsSheet(workbook, gaps);
+      addClarificationQuestionsSheet(workbook, questions);
+      addRisksSheet(workbook, risks);
+      addTestDataSheet(workbook, testData);
+      addNonFunctionalTestsSheet(workbook, nonFunctionalTests);
+      addCoverageMatrixSheet(workbook, coverageMatrix);
+    }
 
     // =========================
     // 📤 RESPONSE
