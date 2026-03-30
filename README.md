@@ -2,6 +2,22 @@
 
 An AI-powered QA analysis tool that transforms raw feature requirements into structured test artifacts — test cases, gap reports, risk assessments, test data specs, non-functional checks, and coverage matrices.
 
+## Why I Built This
+
+Built to speed up QA analysis by transforming raw requirements into structured test artifacts using ISTQB-informed logic and AI-assisted generation.
+
+## QA Value
+
+Helps reduce manual analysis time, identify requirement gaps earlier, improve test coverage, and standardize test design outputs.
+
+## My Contribution
+
+Designed prompts, implemented full-stack app flow, structured output schema, built export-to-Excel logic, and created premium analysis sections for risks, test data, and non-functional checks.
+
+## Limitations / Next Improvements
+
+AI output still requires QA review.
+
 ---
 
 ## Features
