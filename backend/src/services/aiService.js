@@ -18,50 +18,6 @@ function getClient() {
   return new OpenAI({ apiKey });
 }
 
-function tryParseJson(text) {
-  if (typeof text !== "string") return null;
-
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
-
-function parseModelJson(rawText) {
-  if (typeof rawText !== "string" || !rawText.trim()) {
-    throw new Error("Model returned empty output");
-  }
-
-  const trimmed = rawText.trim();
-  const parsedDirect = tryParseJson(trimmed);
-  if (parsedDirect) return parsedDirect;
-
-  const fencedMatch = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
-  if (fencedMatch?.[1]) {
-    const parsedFenced = tryParseJson(fencedMatch[1].trim());
-    if (parsedFenced) return parsedFenced;
-  }
-
-  const firstObj = trimmed.indexOf("{");
-  const lastObj = trimmed.lastIndexOf("}");
-  if (firstObj !== -1 && lastObj !== -1 && lastObj > firstObj) {
-    const parsedObjectSlice = tryParseJson(
-      trimmed.slice(firstObj, lastObj + 1),
-    );
-    if (parsedObjectSlice) return parsedObjectSlice;
-  }
-
-  const firstArr = trimmed.indexOf("[");
-  const lastArr = trimmed.lastIndexOf("]");
-  if (firstArr !== -1 && lastArr !== -1 && lastArr > firstArr) {
-    const parsedArraySlice = tryParseJson(trimmed.slice(firstArr, lastArr + 1));
-    if (parsedArraySlice) return parsedArraySlice;
-  }
-
-  throw new Error("Model returned invalid JSON");
-}
-
 async function callModel(client, prompt) {
   console.time("OpenAI call");
 
@@ -73,7 +29,7 @@ async function callModel(client, prompt) {
   console.timeEnd("OpenAI call");
 
   try {
-    return parseModelJson(response.output_text);
+    return JSON.parse(response.output_text);
   } catch {
     console.error("Invalid JSON from model:", response.output_text);
     throw new Error("Model returned invalid JSON");
