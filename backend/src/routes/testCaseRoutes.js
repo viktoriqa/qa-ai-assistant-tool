@@ -1,7 +1,7 @@
 import express from "express";
 import {
   generateBasicArtifacts,
-  generatePremiumArtifacts
+  generatePremiumArtifacts,
 } from "../services/aiService.js";
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.post("/generate-basic", async (req, res) => {
 
     const result = await generateBasicArtifacts({
       requirement,
-      requirementType
+      requirementType,
     });
 
     res.json(result);
@@ -24,7 +24,7 @@ router.post("/generate-basic", async (req, res) => {
     console.error("Basic generation error:", error);
     res.status(500).json({
       error: "Failed to generate basic test artifacts.",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -39,7 +39,7 @@ router.post("/generate-premium", async (req, res) => {
 
     const result = await generatePremiumArtifacts({
       requirement,
-      requirementType
+      requirementType,
     });
 
     res.json(result);
@@ -47,7 +47,7 @@ router.post("/generate-premium", async (req, res) => {
     console.error("Premium generation error:", error);
     res.status(500).json({
       error: "Failed to generate premium test artifacts.",
-      details: error.message
+      details: error.message,
     });
   }
 });

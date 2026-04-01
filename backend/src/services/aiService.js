@@ -6,12 +6,13 @@ import { buildGenerateTestDataPrompt } from "../prompts/generateTestDataPrompt.j
 import { buildGenerateNonFunctionalTestsPrompt } from "../prompts/generateNonFunctionalTestsPrompt.js";
 import { buildGenerateCoverageMatrixPrompt } from "../prompts/generateCoverageMatrixPrompt.js";
 
-
 function getClient() {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    throw new Error("OPENAI_API_KEY is missing. Check your .env file and dotenv loading.");
+    throw new Error(
+      "OPENAI_API_KEY is missing. Check your .env file and dotenv loading.",
+    );
   }
 
   return new OpenAI({ apiKey });
@@ -22,7 +23,7 @@ async function callModel(client, prompt) {
 
   const response = await client.responses.create({
     model: "gpt-4o-mini",
-    input: prompt
+    input: prompt,
   });
 
   console.timeEnd("OpenAI call");
@@ -54,9 +55,16 @@ function normalizeTestCase(testCase) {
   };
 
   const normalizeType = (value) => {
-    const allowed = ["Positive", "Negative", "Edge", "Validation", "Security", "UI"];
+    const allowed = [
+      "Positive",
+      "Negative",
+      "Edge",
+      "Validation",
+      "Security",
+      "UI",
+    ];
     const found = allowed.find(
-      (item) => item.toLowerCase() === String(value || "").toLowerCase()
+      (item) => item.toLowerCase() === String(value || "").toLowerCase(),
     );
     return found || "Positive";
   };
@@ -64,15 +72,20 @@ function normalizeTestCase(testCase) {
   const normalizeRegressionCandidate = (value) => {
     if (typeof value === "boolean") return value;
 
-    const v = String(value || "").trim().toLowerCase();
+    const v = String(value || "")
+      .trim()
+      .toLowerCase();
     if (["true", "yes", "1"].includes(v)) return true;
     if (["false", "no", "0"].includes(v)) return false;
     return null;
   };
 
   const deriveRegressionCandidate = (priority, severity, type) => {
-    const highRisk = priority === "High" || severity === "Critical" || severity === "High";
-    const stableCoreType = ["Positive", "Validation", "Security"].includes(type);
+    const highRisk =
+      priority === "High" || severity === "Critical" || severity === "High";
+    const stableCoreType = ["Positive", "Validation", "Security"].includes(
+      type,
+    );
     return highRisk || stableCoreType;
   };
 
@@ -87,17 +100,22 @@ function normalizeTestCase(testCase) {
   const priority = normalizePriority(testCase?.priority);
   const severity = normalizeSeverity(testCase?.severity);
   const type = normalizeType(testCase?.type);
-  const normalizedCandidate = normalizeRegressionCandidate(testCase?.regressionCandidate);
+  const normalizedCandidate = normalizeRegressionCandidate(
+    testCase?.regressionCandidate,
+  );
   const regressionCandidate =
     normalizedCandidate ?? deriveRegressionCandidate(priority, severity, type);
   const regressionReason =
-    typeof testCase?.regressionReason === "string" && testCase.regressionReason.trim()
+    typeof testCase?.regressionReason === "string" &&
+    testCase.regressionReason.trim()
       ? testCase.regressionReason.trim()
       : deriveRegressionReason(regressionCandidate, priority, severity, type);
 
   return {
     title: testCase?.title || "Untitled test case",
-    preconditions: Array.isArray(testCase?.preconditions) ? testCase.preconditions : [],
+    preconditions: Array.isArray(testCase?.preconditions)
+      ? testCase.preconditions
+      : [],
     steps: Array.isArray(testCase?.steps) ? testCase.steps : [],
     expectedResult: testCase?.expectedResult || "",
     priority,
@@ -108,40 +126,46 @@ function normalizeTestCase(testCase) {
   };
 }
 
-export async function generateBasicArtifacts({ requirement, requirementType = "web" }) {
+export async function generateBasicArtifacts({
+  requirement,
+  requirementType = "web",
+}) {
   return generateTestArtifacts({
     requirement,
     mode: "basic",
-    requirementType
+    requirementType,
   });
 }
 
-export async function generatePremiumArtifacts({ requirement, requirementType = "web" }) {
+export async function generatePremiumArtifacts({
+  requirement,
+  requirementType = "web",
+}) {
   return generateTestArtifacts({
     requirement,
     mode: "premium",
-    requirementType
+    requirementType,
   });
 }
 
 export async function generateTestCases(requirement, requirementType = "web") {
   const result = await callModel(
     getClient(),
-    buildGenerateTestCasesPrompt(requirement, requirementType)
+    buildGenerateTestCasesPrompt(requirement, requirementType),
   );
 
   return {
     feature: result?.feature || "Untitled Feature",
     testCases: Array.isArray(result?.testCases)
       ? result.testCases.map(normalizeTestCase)
-      : []
+      : [],
   };
 }
 
 export async function detectGaps(requirement, requirementType = "web") {
   const result = await callModel(
     getClient(),
-    buildDetectGapsPrompt(requirement, requirementType)
+    buildDetectGapsPrompt(requirement, requirementType),
   );
 
   return result;
@@ -150,46 +174,65 @@ export async function detectGaps(requirement, requirementType = "web") {
 export async function generateTestArtifacts({
   requirement,
   mode = "basic",
-  requirementType = "web"
+  requirementType = "web",
 }) {
   const client = getClient();
 
   if (mode === "basic") {
     const testCasesResult = await callModel(
       client,
-      buildGenerateTestCasesPrompt(requirement, requirementType)
+      buildGenerateTestCasesPrompt(requirement, requirementType),
     );
 
     return {
       feature: testCasesResult?.feature || "Untitled Feature",
       testCases: Array.isArray(testCasesResult?.testCases)
         ? testCasesResult.testCases.map(normalizeTestCase)
-        : []
+        : [],
     };
   }
 
- const [
+  // Start all calls immediately in parallel.
+  const testCasesPromise = callModel(
+    client,
+    buildGenerateTestCasesPrompt(requirement, requirementType),
+  );
+
+  const coverageMatrixPromise = testCasesPromise.then((testCasesResultRaw) => {
+    const earlyTestCases = Array.isArray(testCasesResultRaw?.testCases)
+      ? testCasesResultRaw.testCases.map(normalizeTestCase)
+      : [];
+    return callModel(
+      client,
+      buildGenerateCoverageMatrixPrompt(requirement, earlyTestCases),
+    );
+  });
+
+  const [
     testCasesResultRaw,
     gapsResultRaw,
     risksResultRaw,
     testDataResultRaw,
-    nonFunctionalTestsResultRaw
+    nonFunctionalTestsResultRaw,
+    coverageMatrixResultRaw,
   ] = await Promise.all([
-    callModel(client, buildGenerateTestCasesPrompt(requirement, requirementType)),
+    testCasesPromise,
     callModel(client, buildDetectGapsPrompt(requirement, requirementType)),
     callModel(client, buildGenerateRisksPrompt(requirement, requirementType)),
-    callModel(client, buildGenerateTestDataPrompt(requirement, requirementType)),
-    callModel(client, buildGenerateNonFunctionalTestsPrompt(requirement, requirementType))
+    callModel(
+      client,
+      buildGenerateTestDataPrompt(requirement, requirementType),
+    ),
+    callModel(
+      client,
+      buildGenerateNonFunctionalTestsPrompt(requirement, requirementType),
+    ),
+    coverageMatrixPromise,
   ]);
 
   const testCases = Array.isArray(testCasesResultRaw?.testCases)
     ? testCasesResultRaw.testCases.map(normalizeTestCase)
     : [];
-
-  const coverageMatrixResultRaw = await callModel(
-    client,
-    buildGenerateCoverageMatrixPrompt(requirement, testCases)
-  );
 
   const gapsResult = gapsResultRaw;
 
@@ -199,12 +242,16 @@ export async function generateTestArtifacts({
     gaps: gapsResult.gaps,
     clarificationQuestions: gapsResult.clarificationQuestions,
     risks: Array.isArray(risksResultRaw?.risks) ? risksResultRaw.risks : [],
-    testData: Array.isArray(testDataResultRaw?.testData) ? testDataResultRaw.testData : [],
-    nonFunctionalTests: Array.isArray(nonFunctionalTestsResultRaw?.nonFunctionalTests)
+    testData: Array.isArray(testDataResultRaw?.testData)
+      ? testDataResultRaw.testData
+      : [],
+    nonFunctionalTests: Array.isArray(
+      nonFunctionalTestsResultRaw?.nonFunctionalTests,
+    )
       ? nonFunctionalTestsResultRaw.nonFunctionalTests
       : [],
     coverageMatrix: Array.isArray(coverageMatrixResultRaw?.coverageMatrix)
       ? coverageMatrixResultRaw.coverageMatrix
-      : []
+      : [],
   };
 }
