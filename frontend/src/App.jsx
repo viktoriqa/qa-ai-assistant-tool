@@ -30,7 +30,15 @@ function App() {
   const [openSection, setOpenSection] = useState("testCases");
 
   const toggleSection = (sectionName) => {
-    setOpenSection((prev) => (prev === sectionName ? null : sectionName));
+    setOpenSection((prev) => {
+      const nextSection = prev === sectionName ? null : sectionName;
+
+      if (nextSection !== "testCases") {
+        setExpandedCases({});
+      }
+
+      return nextSection;
+    });
   };
 
   const toggleCase = (index) => {
