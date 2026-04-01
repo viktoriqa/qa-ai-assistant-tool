@@ -18,6 +18,69 @@ function getClient() {
   return new OpenAI({ apiKey });
 }
 
+function extractResponseText(response) {
+  if (
+    typeof response?.output_text === "string" &&
+    response.output_text.trim()
+  ) {
+    return response.output_text;
+  }
+
+  if (!Array.isArray(response?.output)) return "";
+
+  const textParts = [];
+  for (const item of response.output) {
+    if (!Array.isArray(item?.content)) continue;
+    for (const content of item.content) {
+      if (typeof content?.text === "string") {
+        textParts.push(content.text);
+      }
+    }
+  }
+
+  return textParts.join("\n").trim();
+}
+
+function tryParseJson(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+function parseModelJson(rawText) {
+  const text = String(rawText || "").trim();
+  if (!text) {
+    throw new Error("Model returned empty output");
+  }
+
+  const direct = tryParseJson(text);
+  if (direct) return direct;
+
+  const fencedMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fencedMatch?.[1]) {
+    const parsedFenced = tryParseJson(fencedMatch[1].trim());
+    if (parsedFenced) return parsedFenced;
+  }
+
+  const firstObject = text.indexOf("{");
+  const lastObject = text.lastIndexOf("}");
+  if (firstObject !== -1 && lastObject > firstObject) {
+    const parsedObject = tryParseJson(text.slice(firstObject, lastObject + 1));
+    if (parsedObject) return parsedObject;
+  }
+
+  const firstArray = text.indexOf("[");
+  const lastArray = text.lastIndexOf("]");
+  if (firstArray !== -1 && lastArray > firstArray) {
+    const parsedArray = tryParseJson(text.slice(firstArray, lastArray + 1));
+    if (parsedArray) return parsedArray;
+  }
+
+  throw new Error("Model returned invalid JSON");
+}
+
 async function callModel(client, prompt) {
   console.time("OpenAI call");
 
@@ -29,10 +92,20 @@ async function callModel(client, prompt) {
   console.timeEnd("OpenAI call");
 
   try {
-    return JSON.parse(response.output_text);
-  } catch {
-    console.error("Invalid JSON from model:", response.output_text);
-    throw new Error("Model returned invalid JSON");
+    const outputText = extractResponseText(response);
+    return parseModelJson(outputText);
+  } catch (error) {
+    console.error("Invalid JSON from model:", response?.output_text);
+    throw new Error(error?.message || "Model returned invalid JSON");
+  }
+}
+
+async function safeCallModel(client, prompt, fallbackValue, sectionName) {
+  try {
+    return await callModel(client, prompt);
+  } catch (error) {
+    console.warn(`Falling back for ${sectionName}:`, error.message);
+    return fallbackValue;
   }
 }
 
@@ -193,18 +266,22 @@ export async function generateTestArtifacts({
   }
 
   // Start all calls immediately in parallel.
-  const testCasesPromise = callModel(
+  const testCasesPromise = safeCallModel(
     client,
     buildGenerateTestCasesPrompt(requirement, requirementType),
+    { feature: "Untitled Feature", testCases: [] },
+    "testCases",
   );
 
   const coverageMatrixPromise = testCasesPromise.then((testCasesResultRaw) => {
     const earlyTestCases = Array.isArray(testCasesResultRaw?.testCases)
       ? testCasesResultRaw.testCases.map(normalizeTestCase)
       : [];
-    return callModel(
+    return safeCallModel(
       client,
       buildGenerateCoverageMatrixPrompt(requirement, earlyTestCases),
+      { coverageMatrix: [] },
+      "coverageMatrix",
     );
   });
 
@@ -217,15 +294,29 @@ export async function generateTestArtifacts({
     coverageMatrixResultRaw,
   ] = await Promise.all([
     testCasesPromise,
-    callModel(client, buildDetectGapsPrompt(requirement, requirementType)),
-    callModel(client, buildGenerateRisksPrompt(requirement, requirementType)),
-    callModel(
+    safeCallModel(
+      client,
+      buildDetectGapsPrompt(requirement, requirementType),
+      { gaps: [], clarificationQuestions: [] },
+      "gaps",
+    ),
+    safeCallModel(
+      client,
+      buildGenerateRisksPrompt(requirement, requirementType),
+      { risks: [] },
+      "risks",
+    ),
+    safeCallModel(
       client,
       buildGenerateTestDataPrompt(requirement, requirementType),
+      { testData: [] },
+      "testData",
     ),
-    callModel(
+    safeCallModel(
       client,
       buildGenerateNonFunctionalTestsPrompt(requirement, requirementType),
+      { nonFunctionalTests: [] },
+      "nonFunctionalTests",
     ),
     coverageMatrixPromise,
   ]);
